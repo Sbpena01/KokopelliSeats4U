@@ -1,0 +1,161 @@
+<html>
+
+<body>
+    <script type="text/javascript">
+        function handleCreateVenue(e) {
+            let name = document.getElementById("arg1").value;
+            let rows = document.getElementById("arg2").value;
+            let lcol = document.getElementById("arg3").value;
+            let ccol = document.getElementById("arg4").value;
+            let rcol = document.getElementById("arg5").value;
+
+            createVenuePayload = {
+                "name": name,
+                "rows": rows,
+                "lcol": lcol,
+                "ccol": ccol,
+                "rcol": rcol
+            }
+
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createVenue",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(createVenuePayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("result").value = result.body
+            }
+            fetchResult()
+        }
+
+
+        function handleDeleteVenue(e) {
+            //deleteVenue
+            let delName = document.getElementById("arg6").value;
+
+            deleteVenuePayload = {
+                //Delete Venue
+                "name": delName
+            }
+
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/deletevenue", // Fix URL <-------
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(deleteVenuePayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("result").value = result.body
+            }
+            fetchResult()
+        }
+
+        function handleCreateShow(e) {
+            //createShow
+            let showName = document.getElementById("arg7").value;
+            let date = document.getElementById("arg8").value;
+            let initPrice = document.getElementById("arg9").value;
+            let venue = document.getElementById("arg10").value;
+
+            createShowPayload = {
+                //createShow
+                "name": showName,
+                "date": date,
+                "price": initPrice,
+                "venue": venue
+            }
+
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createShows", // Fix URL <----
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(createShowPayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("result").value = result.success
+            }
+            fetchResult()
+        }
+
+        function handleListVenues(e) {
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenues",
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then((response) => response)
+            const displayList = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("venueList").value = JSON.stringify(result.success)
+
+                let textElement = document.getElementById("venueList")
+                textElement.textContent = JSON.stringify(result.success)
+            }
+
+            displayList()
+        }
+        function handleListActiveShows(e){
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listActiveShows",
+            {
+                method: "GET",
+                headers: {
+                        "Content-Type": "application/json",
+                    },
+            }).then((response) => response)
+            const displayList = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("showList").value = JSON.stringify(result.success)
+
+                let textElement = document.getElementById("showList")
+                textElement.textContent = JSON.stringify(result.success)
+            }
+            displayList()
+        }
+
+
+    </script>
+    <h1>Create Venue</h1>
+    Name: &nbsp; <input id="arg1" /> &nbsp; Rows: &nbsp; <input id="arg2" /> &nbsp; Columns In Left Section: &nbsp;
+    <input id="arg3" />
+    &nbsp; Columns in Center Section: &nbsp; <input id="arg4" /> &nbsp; Columns in Right Section: &nbsp; <input
+        id="arg5" /><br>
+    <input type="button" value="Create Venue" onClick="JavaScript:handleCreateVenue(this)">
+
+    <h1>Delete Venue</h1>
+    Venue Name To Delete: &nbsp; <input id="arg6" /> &nbsp;
+    <input type="button" value="Delete Venue" onClick="JavaScript:handleDeleteVenue(this)">
+
+    <h1>Create Show</h1>
+    Show Name: &nbsp; <input id="arg7" /> &nbsp; Show Date (yyyy-mm-dd hh-mm-ss): &nbsp; <input id="arg8" /> &nbsp; Seat
+    Price: &nbsp; <input id="arg9" /> &nbsp; Venue: &nbsp; <input id="arg10" /> &nbsp;
+    <input type="button" value="Create Show" onClick="JavaScript:handleCreateShow(this)">
+
+    <h1>List Venues</h1>
+    <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)">
+    <p id="venueList"></p>
+
+    <h1>List Active Shows</h1>
+    <input type="button" value="List Active Shows" onClick="JavaScript:handleListActiveShows(this)">
+    <p id="showList"></p>
+    </div>
+
+
+</body>
+
+</html>

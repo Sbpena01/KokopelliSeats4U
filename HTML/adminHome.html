@@ -1,0 +1,82 @@
+<html>
+    <script>
+        function handleGenerateReport(e){
+            let venueName = document.getElementById("venueToReport").value
+            payload = {
+                "name": venueName
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createShowReport",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const displayReport = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("showReport").innerHTML = JSON.stringify(result.success)
+            }
+            displayReport()
+        }
+
+        function handleListVenues(e){
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenues", // Fix URL <----
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then((response) => response)
+            const displayList = async () => {
+                let val = await response
+                let result = await val.json()
+                const venueList = document.getElementById("venueList")
+                let namesHTML = "";
+
+                result.success.forEach(element => {
+                    namesHTML += `<p>${element.name}</p>`;
+                });
+                venueList.innerHTML = namesHTML
+            }
+            displayList()
+        }
+
+        function handleDeleteShow(e){
+            let showName = document.getElementById("showToDelete").value;
+            let showDate = document.getElementById("showDate").value;
+            deleteShowPayload = {
+                "name": showName,
+                "date": showDate
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/deleteVenueAdmin",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(deleteShowPayload)
+            }).then((response) => response)
+            const deleteShow = async () => {
+                let val = await response
+                let result = await val.json()
+                if(result.statusCode == 200){
+                    alert("Show has been deleted")
+                }
+            }
+            deleteShow()
+        }
+    </script>
+    <h1>Welcome Admin</h1>
+
+    <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)"><br>
+    <input id="venueToReport" placeholder="Venue Name">
+    <input type="button" value="Generate Report" onClick="JavaScript:handleGenerateReport(this)"><br>
+    <input id="showToDelete" placeholder="Show Name">
+    <input id="showDate" type="datetime-local">
+    <input type="button" value="Delete Show" onClick="JavaScript:handleDeleteShow(this)"><br>
+    
+    <p1 id="showReport"></p1>
+    <p1 id="venueList"></p1>
+</html>

@@ -1,0 +1,210 @@
+<html>
+    <script>
+        function handleListActiveShows(e){
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listActiveShows",
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then((response) => response)
+            const displayList = async () => {
+                let val = await response
+                let result = await val.json()
+                const activeShowList = document.getElementById("showList")
+                displayContent = ""
+
+                result.success.forEach(element => {
+                    let date = element.date.replace('T', ' ')
+                    date = date.replace(':00.000Z', '')
+
+                    displayContent += `<p>${element.name} ${date} $${element.price}</p>`
+                });
+                activeShowList.innerHTML = displayContent;
+            }
+            displayList()
+        }
+
+        function handleListAvailableSeats(e){
+            let showName = document.getElementById("showName").value;
+            let showDate = document.getElementById("showDate").value;
+            payload = {
+                "name": showName,
+                "date": showDate
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listAvailableSeats",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const displaySeats = async () => {
+                let val = await response
+                let result = await val.json()
+                let seatList = result.success
+                document.getElementById("seatList").innerHTML = "";
+                const seatForm = document.getElementById("seatList")
+                if(seatList == "No Available Seats"){
+                    alert("Show Sold Out!!!");
+                }
+                seatList.forEach(element => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = "seat" + element.stid;
+                    checkbox.name = "seat";
+                    checkbox.value = JSON.stringify({
+                        "row": element.row,
+                        "col": element.col,
+                        "secName": element.secName
+                    });
+
+                    const label = document.createElement('label')
+                    label.appendChild(document.createTextNode(
+                        "Row:" + JSON.stringify(element.row) + ", " +
+                        "Column: " + JSON.stringify(element.col) + ", " +
+                        "Section: " + JSON.stringify(element.secName)
+                        ))
+
+                    seatForm.appendChild(checkbox);
+                    seatForm.appendChild(label);
+                    seatForm.appendChild(document.createElement('br'))
+
+                })
+            }
+            displaySeats()
+        }
+
+        function handlePurchaseSeats(e){
+            const seatForm = document.getElementById("seatList");
+            const selected = [];
+            const checked = seatForm.querySelectorAll('input[name="seat"]:checked');
+            
+            checked.forEach((checkbox) => {
+                var stored = JSON.parse(checkbox.value);
+                selected.push({
+                    "row": stored.row,
+                    "col": stored.col,
+                    "secName": stored.secName
+                })
+            })
+            let name = document.getElementById("showName").value;
+            let date = document.getElementById("showDate").value
+            payload = {
+                "name": name,
+                "date": date,
+                "selected": selected
+            }
+            console.log(JSON.stringify(payload))
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/purchaseSeats",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const purchaseSeats = async () => {
+                let val = await response
+                let result = await val.json()
+                if(result.statusCode == 200){
+                    alert("Seats have been purchased")
+                }
+            }
+            purchaseSeats()
+        }
+
+        function handleSearchShows(e){
+            let search = document.getElementById("showSearch").value
+            payload = {
+                "name": search
+            }
+            console.log(JSON.stringify(payload))
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/searchShow",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const searchShow = async () => {
+                let val = await response
+                let result = await val.json()
+                const activeShowList = document.getElementById("showList")
+                displayContent = ""
+
+                result.success.forEach(element => {
+                    let date = element.date.replace('T', ' ')
+                    date = date.replace(':00.000Z', '')
+
+                    displayContent += `<p>${element.name} ${date} $${element.price}</p>`
+                });
+                activeShowList.innerHTML = displayContent;
+            }
+            searchShow()
+        }
+
+        function handleSortSeats(e, param){
+            let name = document.getElementById("showName").value;
+            let date = document.getElementById("showDate").value;
+            payload = {
+                "name": name,
+                "date": date,
+                "type": param
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listAvailableSeats",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const sortSeats = async () => {
+                let val = await response;
+                let result = await val.json();
+                document.getElementById("seatList").innerHTML = "";
+                const seatForm = document.getElementById("seatList")
+                if(seatList == "No Available Seats"){
+                    alert("Show Sold Out!!!");
+                }
+                seatList.forEach(element => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = "seat" + element.stid;
+                    checkbox.name = "seat";
+                    checkbox.value = JSON.stringify({
+                        "row": element.row,
+                        "col": element.col,
+                        "secName": element.secName
+                    });
+
+                    const label = document.createElement('label')
+                    label.appendChild(document.createTextNode(JSON.stringify(element)))
+
+                    seatForm.appendChild(checkbox);
+                    seatForm.appendChild(label);
+                    seatForm.appendChild(document.createElement('br'))
+
+                })
+            }
+            sortSeats()
+        }
+    </script>
+    <h1>Welcome</h1>
+
+    <input type="button" value="List Active Shows" onClick="JavaScript:handleListActiveShows(this)"><br>
+    <input id="showName" placeholder="Show Name">
+    <input id="showDate" type="datetime-local">
+    <input type="button" value="List Available Seats" onClick="JavaScript:handleListAvailableSeats(this)">
+    <input type="button" value="Purchase Seats" onClick="JavaScript:handlePurchaseSeats(this)">
+    <input type="button" value="Sort by Price" onClick="JavaScript:handleSortSeats(this, 0)">
+    <input type="button" value="Sort by Section" onClick="JavaScript:handleSortSeats(this, 1)">
+    <input type="button" value="Sort by Row" onClick="JavaScript:handleSortSeats(this, 2)">
+    <input id="showSearch" placeholder="Search for show">
+    <input type="button" value="Search" onClick="JavaScript:handleSearchShows(this)"><br>
+    <p id="showList"></p><br>
+    <form id="seatList"></form>
+</html>

@@ -1,0 +1,63 @@
+<html>
+<script>
+    function switchPage() {
+        window.location.href = "https://create-venue.s3.amazonaws.com/login.html"
+    }
+
+    function handleCreateAccount(e) {
+        let username = document.getElementById("arg1").value;
+        let password = document.getElementById("arg2").value;
+        let type = document.getElementById("arg3").value;
+
+        if ((username == null || username == "") || (password == null || password == "")) {
+            alert("Please input all information");
+            return;
+        }
+
+        if (type !== "Administrator" && type !== "Customer" && type !== "Venue Manager") {
+            alert("Please input Customer, Venue Manager, or Administrator");
+            return;
+        }
+
+        const createAccountPayload = {
+            "username": username,
+            "password": password,
+            "type": type
+        };
+
+        fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createAccount", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(createAccountPayload)
+        })
+            .then((response) => response.json())
+            .then((result) => {
+                if (result.statusCode === 400) {
+                    alert(result.error);
+                } else {
+                    document.getElementById("result").innerText = result.body;
+                    switchPage();
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
+</script>
+<h1>Create Account Page</h1>
+<input id="arg1" placeholder="Username"/><br>
+<input id="arg2" placeholder="Password"/> <br>
+<h2>Are you a: Customer, Venue Manager, or Administrator?</h2>
+<input id="arg3" placeholder="Account Type" /> <br>
+<input type="button" value="Create Account" onClick="JavaScript:handleCreateAccount(this)">
+
+
+<div id="result"></div>
+
+<h3>Have an account?</h3>
+<input type="button" value="Click here to Log In" onClick="JavaScript:switchPage(this)">
+
+</html>

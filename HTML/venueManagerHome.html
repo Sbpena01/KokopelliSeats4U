@@ -1,0 +1,213 @@
+<html>
+    <link rel="stylesheet" href="https://create-venue.s3.amazonaws.com/venueManagerHome.css">
+    <script>
+        function handleCreateVenue(e) {
+            let name = document.getElementById("arg1").value;
+            let rows = document.getElementById("arg2").value;
+            let lcol = document.getElementById("arg3").value;
+            let ccol = document.getElementById("arg4").value;
+            let rcol = document.getElementById("arg5").value;
+            let uid = localStorage.getItem("uid");
+            createVenuePayload = {
+                "name": name,
+                "rows": rows,
+                "lcol": lcol,
+                "ccol": ccol,
+                "rcol": rcol,
+                "uid": uid
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createVenue",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(createVenuePayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("result").value = result.body
+            }
+            fetchResult()
+        }
+        
+        function handleListVenues(e) {
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenues", // Fix URL <----
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then((response) => response)
+            const displayList = async () => {
+                let val = await response
+                let result = await val.json()
+                const venueList = document.getElementById("venueList")
+                let namesHTML = "";
+
+                result.success.forEach(element => {
+                    namesHTML += `<p>${element.name}</p>`;
+                });
+                venueList.innerHTML = namesHTML
+            }
+            displayList()
+        }
+        function handleDeleteVenue(e) {
+            let delName = document.getElementById("arg1").value;
+            let uid = localStorage.getItem("uid");
+
+            deleteVenuePayload = {
+                "name": delName,
+                "uid": uid
+            }
+
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/deletevenue", // Fix URL <-------
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(deleteVenuePayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("result").value = result.body
+            }
+            fetchResult()
+        }
+        
+        function handleCreateShow(e){
+            let showName = document.getElementById("showName").value;
+            let date = document.getElementById("showDate").value;
+            let initPrice = document.getElementById("price").value;
+            let venue = document.getElementById("showVenue").value;
+            let uid = localStorage.getItem("uid");
+
+            createShowPayload = {
+                "name": showName,
+                "date": date,
+                "price": initPrice,
+                "venue": venue,
+                "uid": uid
+            }
+
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/createShows", // Fix URL <----
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(createShowPayload)
+                }).then((response) => response)
+            const fetchResult = async () => {
+                let val = await response
+                let result = await val.json()
+            }
+            fetchResult()
+        }
+        
+        function handleDeleteShow(e){
+            let showName = document.getElementById("showName").value;
+            let showDate = document.getElementById("showDate").value;
+            let uid = localStorage.getItem("uid");
+            deleteShowPayload = {
+                "name": showName,
+                "date": showDate,
+                "uid": uid
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/deleteShowVM",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(deleteShowPayload)
+            }).then((response) => response)
+            const deleteShow = async () => {
+                let val = await response
+                let result = await val.json()
+                if(result.statusCode == 200){
+                    alert("Show has been deleted")
+                }
+            }
+            deleteShow()
+        }
+
+        function handleActivateShow(e){
+            let name = document.getElementById("showName").value;
+            let date = document.getElementById("showDate").value;
+            let uid = localStorage.getItem("uid");
+            payload = {
+                "name": name,
+                "date": date,
+                "uid": uid
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/activateShow",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload)
+            }).then((response) => response)
+            const activateShow = async () => {
+                let val = await response
+                let result = await val.json()
+                if(result.statusCode == 200){
+                    alert("Show has been activated")
+                }
+            }
+            activateShow()
+        }
+
+        function createShowReport(e){
+            let name = document.getElementById("showName").value;
+            let uid = localStorage.getItem("uid")
+            payload = {
+                "name": name,
+                "uid": uid
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/generateShowReportVM",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const displayReport = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("showReport").innerHTML = JSON.stringify(result.success)
+            }
+            displayReport()
+        }
+        
+    </script>
+
+    <h1>Welcome!</h1><br>
+    <h2>Create Venue</h2>
+    <input id="arg1" placeholder="Name"/><br>
+    <input id="arg2" placeholder="Rows"/><br>
+    <input id="arg3" placeholder="Left Section Columns"/><br>
+    <input id="arg4" placeholder="Center Section Columns"/><br>
+    <input id="arg5" placeholder="Right Section Columns"/><br>
+    <input type="button" value="Create Venue" onClick="JavaScript:handleCreateVenue(this)">
+    <input type="button" value="Delete Venue" onClick="JavaScript:handleDeleteVenue(this)"> <br>
+    <br>
+    <input id="showName" placeholder="Show Name"/><br>
+    <input id="showVenue" placeholder="Venue"/><br>
+    <input id="price" placeholder="Ticket Price"/><br>
+    <input id="showDate" type="datetime-local"><br>
+    <input type="button" value="Create Show" onClick="JavaScript:handleCreateShow(this)">
+    <input type="button" value="Delete Show" onClick="JavaScript:handleDeleteShow(this)">
+    <input type="button" value="Activate Show" onClick="JavaScript:handleActivateShow(this)">
+    <input type="button" value="Generate Show Report" onClick="JavaScript:createShowReport(this)"><br>
+
+    <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)">
+
+    <p id="venueList"></p>
+    <p id="showReport"></p>
+</html>
