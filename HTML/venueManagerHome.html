@@ -11,11 +11,11 @@
         
 
         function handleCreateVenue(e) {
-            let name = document.getElementById("arg1").value;
-            let rows = document.getElementById("arg2").value;
-            let lcol = document.getElementById("arg3").value;
-            let ccol = document.getElementById("arg4").value;
-            let rcol = document.getElementById("arg5").value;
+            let name = document.getElementById("name").value;
+            let rows = document.getElementById("rows").value;
+            let lcol = document.getElementById("lcol").value;
+            let ccol = document.getElementById("ccol").value;
+            let rcol = document.getElementById("rcol").value;
             let uid = getUID()
             createVenuePayload = {
                 "name": name,
@@ -36,34 +36,50 @@
             const fetchResult = async () => {
                 let val = await response
                 let result = await val.json()
-                document.getElementById("result").value = result.body
+                if(result.statusCode == 200){
+                    alert("Venue has been created")
+                }
+                else{
+                    alert("Venue has not been created")
+                }
             }
             fetchResult()
         }
         
         function handleListVenues(e) {
+            let uid = getUID();
+            payload = {
+                "uid": uid
+            }
             const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenues", // Fix URL <----
                 {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify(payload)
                 }).then((response) => response)
             const displayList = async () => {
                 let val = await response
                 let result = await val.json()
                 const venueList = document.getElementById("venueList")
                 let namesHTML = "";
-
-                result.success.forEach(element => {
-                    namesHTML += `<p>${element.name}</p>`;
-                });
-                venueList.innerHTML = namesHTML
+                if(result.success.length == 0){
+                    venueList.innerHTML = "No Venues Found"
+                }
+                else{
+                    result.success.forEach(element => {
+                        namesHTML += `<p>${element.name}</p>`;
+                    });
+                    venueList.innerHTML = namesHTML;
+                }
+                
             }
             displayList()
         }
+
         function handleDeleteVenue(e) {
-            let delName = document.getElementById("arg1").value;
+            let delName = document.getElementById("name").value;
             let uid = getUID()
 
             deleteVenuePayload = {
@@ -82,7 +98,12 @@
             const fetchResult = async () => {
                 let val = await response
                 let result = await val.json()
-                document.getElementById("result").value = result.body
+                if(result.statusCode == 200){
+                    alert("Venue has been deleted")
+                }
+                else{
+                    alert("Venue has not been deleted")
+                }
             }
             fetchResult()
         }
@@ -193,16 +214,52 @@
             }
             displayReport()
         }
+
+        function handleListShows(e){
+            let uid = getUID();
+            payload = {
+                "uid": uid
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listShows",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+                const displayList = async () => {
+                    let val = await response
+                    let result = await val.json()
+                    if(result.statusCode == 400){
+                        alert("Please Create a Venue")
+                    }
+                    let list = result.success
+                    if(list.length == 0){
+                        document.getElementById("showList").innerHTML = "No Shows Found"
+                    }
+                    list.forEach(element => {
+                        document.getElementById("showList").appendChild(document.createTextNode(
+                            "Name: " + JSON.stringify(element.name) + ", " +
+                            "Venue ID: " + JSON.stringify(element.vid) + ", " +
+                            "Date: " + JSON.stringify(element.date) + ", " +
+                            "Price: " + JSON.stringify(element.price)
+                        ))
+                    })
+                    
+                }
+                displayList()
+        }
         
     </script>
 
     <h1>Welcome!</h1><br>
     <h2>Create Venue</h2>
-    <input id="arg1" placeholder="Name"/><br>
-    <input id="arg2" placeholder="Rows"/><br>
-    <input id="arg3" placeholder="Left Section Columns"/><br>
-    <input id="arg4" placeholder="Center Section Columns"/><br>
-    <input id="arg5" placeholder="Right Section Columns"/><br>
+    <input id="name" placeholder="Name"/><br>
+    <input id="rows" placeholder="Rows"/><br>
+    <input id="lcol" placeholder="Left Section Columns"/><br>
+    <input id="ccol" placeholder="Center Section Columns"/><br>
+    <input id="rcol" placeholder="Right Section Columns"/><br>
     <input type="button" value="Create Venue" onClick="JavaScript:handleCreateVenue(this)">
     <input type="button" value="Delete Venue" onClick="JavaScript:handleDeleteVenue(this)"> <br>
     <br>
@@ -216,7 +273,9 @@
     <input type="button" value="Generate Show Report" onClick="JavaScript:createShowReport(this)"><br>
 
     <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)">
+    <input type="button" value="List Shows" onClick="JavaScript:handleListShows(this)"><br>
 
     <p id="venueList"></p>
+    <label id="showList"></label>
     <p id="showReport"></p>
 </html>
