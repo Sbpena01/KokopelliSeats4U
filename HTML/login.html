@@ -25,24 +25,23 @@
             let val = await response
             let result = await val.json()
             let accountType = undefined
-            localStorage.setItem("uid", result.uid)
 
             if(result.success == "failure"){
                 alert("Username or password is incorrect")
                 return;
             }
             else{
-                accountType = result.success
+                accountType = result.success.type
             }
-            if(accountType == "\"Venue Manager\""){
-                window.location.href = "https://create-venue.s3.amazonaws.com/venueManagerHome.html"
+            if(accountType == "Venue Manager"){
+                window.location.href = "https://create-venue.s3.amazonaws.com/venueManagerHome.html?uid=" + result.success.uid
                 return;
             }
-            else if(accountType == "\"Administrator\""){
+            else if(accountType == "Administrator"){
                 window.location.href = "https://create-venue.s3.amazonaws.com/adminHome.html"
                 return;
             }
-            else if(accountType == "\"Customer\""){
+            else if(accountType == "Customer"){
                 window.location.href = "https://create-venue.s3.amazonaws.com/consumerHome.html"
                 return;
             }

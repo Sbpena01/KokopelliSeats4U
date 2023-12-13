@@ -1,13 +1,22 @@
 <html>
     <link rel="stylesheet" href="https://create-venue.s3.amazonaws.com/venueManagerHome.css">
     <script>
+
+        function getUID(){
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const uid = urlParams.get('uid');
+            return uid
+        }
+        
+
         function handleCreateVenue(e) {
             let name = document.getElementById("arg1").value;
             let rows = document.getElementById("arg2").value;
             let lcol = document.getElementById("arg3").value;
             let ccol = document.getElementById("arg4").value;
             let rcol = document.getElementById("arg5").value;
-            let uid = localStorage.getItem("uid");
+            let uid = getUID()
             createVenuePayload = {
                 "name": name,
                 "rows": rows,
@@ -55,7 +64,7 @@
         }
         function handleDeleteVenue(e) {
             let delName = document.getElementById("arg1").value;
-            let uid = localStorage.getItem("uid");
+            let uid = getUID()
 
             deleteVenuePayload = {
                 "name": delName,
@@ -83,7 +92,7 @@
             let date = document.getElementById("showDate").value;
             let initPrice = document.getElementById("price").value;
             let venue = document.getElementById("showVenue").value;
-            let uid = localStorage.getItem("uid");
+            let uid = getUID()
 
             createShowPayload = {
                 "name": showName,
@@ -111,7 +120,7 @@
         function handleDeleteShow(e){
             let showName = document.getElementById("showName").value;
             let showDate = document.getElementById("showDate").value;
-            let uid = localStorage.getItem("uid");
+            let uid = getUID()
             deleteShowPayload = {
                 "name": showName,
                 "date": showDate,
@@ -138,7 +147,7 @@
         function handleActivateShow(e){
             let name = document.getElementById("showName").value;
             let date = document.getElementById("showDate").value;
-            let uid = localStorage.getItem("uid");
+            let uid = getUID()
             payload = {
                 "name": name,
                 "date": date,
@@ -164,7 +173,7 @@
 
         function createShowReport(e){
             let name = document.getElementById("showName").value;
-            let uid = localStorage.getItem("uid")
+            let uid = getUID()
             payload = {
                 "name": name,
                 "uid": uid
