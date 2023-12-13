@@ -46,8 +46,8 @@
                 let seatList = result.success
                 document.getElementById("seatList").innerHTML = "";
                 const seatForm = document.getElementById("seatList")
-                if(seatList == "No Available Seats"){
-                    alert("Show Sold Out!!!");
+                if(result.statusCode == 400){
+                    alert(seatList);
                 }
                 seatList.forEach(element => {
                     const checkbox = document.createElement('input');
@@ -139,11 +139,39 @@
                     let date = element.date.replace('T', ' ')
                     date = date.replace(':00.000Z', '')
 
-                    displayContent += `<p>${element.name} ${date} $${element.price}</p>`
+                    displayContent += `<p>${element.name} ${date} $${element.initialPrice}</p>`
                 });
                 activeShowList.innerHTML = displayContent;
             }
             searchShow()
+        }
+
+        function handleSearchVenues(e){
+            let search = document.getElementById("venueSearch").value
+            payload = {
+                "name": search
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/searchVenue",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const searchVenue = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("venueList").innerHTML = "";
+
+                result.success.forEach(element => {
+                    document.getElementById("venueList").appendChild(document.createTextNode(
+                        JSON.stringify(element.name)
+                    ))
+                    document.getElementById("venueList").appendChild(document.createElement("br"))
+                });
+            }
+            searchVenue()
         }
 
         function handleSortSeats(e, param){
@@ -152,9 +180,9 @@
             payload = {
                 "name": name,
                 "date": date,
-                "type": param
+                "param": param
             }
-            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listAvailableSeats",
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/sortSeats",
                 {
                     method: "POST",
                     headers: {
@@ -167,6 +195,7 @@
                 let result = await val.json();
                 document.getElementById("seatList").innerHTML = "";
                 const seatForm = document.getElementById("seatList")
+                seatList = result.success
                 if(seatList == "No Available Seats"){
                     alert("Show Sold Out!!!");
                 }
@@ -182,7 +211,11 @@
                     });
 
                     const label = document.createElement('label')
-                    label.appendChild(document.createTextNode(JSON.stringify(element)))
+                    label.appendChild(document.createTextNode(
+                        "Row: " + JSON.stringify(element.row) + 
+                        "  Column: " + JSON.stringify(element.col) + 
+                        "  Section: " + JSON.stringify(element.secName)
+                    ))
 
                     seatForm.appendChild(checkbox);
                     seatForm.appendChild(label);
@@ -204,7 +237,10 @@
     <input type="button" value="Sort by Section" onClick="JavaScript:handleSortSeats(this, 1)">
     <input type="button" value="Sort by Row" onClick="JavaScript:handleSortSeats(this, 2)">
     <input id="showSearch" placeholder="Search for show">
-    <input type="button" value="Search" onClick="JavaScript:handleSearchShows(this)"><br>
+    <input type="button" value="Search Show" onClick="JavaScript:handleSearchShows(this)"><br>
+    <input id="venueSearch" placeholder="Search for Venue">
+    <input type="button" value="Search Venue" onClick="JavaScript:handleSearchVenues(this)"><br>
     <p id="showList"></p><br>
+    <label id="venueList"></label><br>
     <form id="seatList"></form>
 </html>

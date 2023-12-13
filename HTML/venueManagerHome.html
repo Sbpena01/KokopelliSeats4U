@@ -62,16 +62,19 @@
             const displayList = async () => {
                 let val = await response
                 let result = await val.json()
-                const venueList = document.getElementById("venueList")
-                let namesHTML = "";
+                const list = result.success
                 if(result.success.length == 0){
                     venueList.innerHTML = "No Venues Found"
                 }
                 else{
-                    result.success.forEach(element => {
-                        namesHTML += `<p>${element.name}</p>`;
-                    });
-                    venueList.innerHTML = namesHTML;
+                    document.getElementById("venueList").innerHTML = ""
+                    list.forEach(element => {
+                        document.getElementById("venueList").appendChild(document.createTextNode( 
+                            "Name: " + JSON.stringify(element.name) + ",  " +
+                            "Venue ID: " + JSON.stringify(element.vid)
+                        ))
+                        document.getElementById("venueList").appendChild(document.createElement("br"))
+                    })
                 }
                 
             }
@@ -193,7 +196,7 @@
         }
 
         function createShowReport(e){
-            let name = document.getElementById("showName").value;
+            let name = document.getElementById("venueName").value;
             let uid = getUID()
             payload = {
                 "name": name,
@@ -210,7 +213,18 @@
             const displayReport = async () => {
                 let val = await response
                 let result = await val.json()
-                document.getElementById("showReport").innerHTML = JSON.stringify(result.success)
+                let list = result.success
+                document.getElementById("showReport").innerHTML = ""  
+                list.forEach(element => {
+                    document.getElementById("showReport").appendChild(document.createTextNode(
+                        "Show: " + JSON.stringify(element.name) + ",  " +
+                        "Active: " + JSON.stringify(element.active) + ",  " +
+                        "Open Seats: " + JSON.stringify(element.openSeats) + "/" + JSON.stringify(element.totalSeats) + ",  " +
+                        "Revenue: " + JSON.stringify(element.revenue)
+                    ))
+                    document.getElementById("showReport").appendChild(document.createElement("br"))
+                })
+                
             }
             displayReport()
         }
@@ -238,14 +252,19 @@
                     if(list.length == 0){
                         document.getElementById("showList").innerHTML = "No Shows Found"
                     }
-                    list.forEach(element => {
-                        document.getElementById("showList").appendChild(document.createTextNode(
-                            "Name: " + JSON.stringify(element.name) + ", " +
-                            "Venue ID: " + JSON.stringify(element.vid) + ", " +
-                            "Date: " + JSON.stringify(element.date) + ", " +
-                            "Price: " + JSON.stringify(element.price)
-                        ))
+                    else {
+                        document.getElementById("showList").innerHTML = ""
+                        list.forEach(element => {
+                            document.getElementById("showList").appendChild(document.createTextNode( 
+                                "Name: " + JSON.stringify(element.name) + ",  " +
+                                "Venue ID: " + JSON.stringify(element.vid) + ",  " +
+                                "Date: " + JSON.stringify(element.date) + ",  " +
+                                "Price: " + JSON.stringify(element.price)
+                            ))
+                        document.getElementById("showList").appendChild(document.createElement("br"))
                     })
+                    }
+                    
                     
                 }
                 displayList()
@@ -269,13 +288,15 @@
     <input id="showDate" type="datetime-local"><br>
     <input type="button" value="Create Show" onClick="JavaScript:handleCreateShow(this)">
     <input type="button" value="Delete Show" onClick="JavaScript:handleDeleteShow(this)">
-    <input type="button" value="Activate Show" onClick="JavaScript:handleActivateShow(this)">
+    <input type="button" value="Activate Show" onClick="JavaScript:handleActivateShow(this)"><br>
+    <br>
+    <input id="venueName" placeholder="Venue Name">
     <input type="button" value="Generate Show Report" onClick="JavaScript:createShowReport(this)"><br>
-
+    <br>
     <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)">
     <input type="button" value="List Shows" onClick="JavaScript:handleListShows(this)"><br>
-
+    <br>
     <p id="venueList"></p>
-    <label id="showList"></label>
-    <p id="showReport"></p>
+    <label id="showList"></label><br>
+    <label id="showReport"></label>
 </html>
