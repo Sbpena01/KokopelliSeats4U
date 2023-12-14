@@ -16,7 +16,23 @@
             const displayReport = async () => {
                 let val = await response
                 let result = await val.json()
-                document.getElementById("showReport").innerHTML = JSON.stringify(result.success)
+                document.getElementById("showReport").innerHTML = "";
+                list = result.success
+                if(result.statusCode == 200){
+                    list.forEach(element => {
+                        document.getElementById("showReport").appendChild(document.createTextNode(
+                        "Show: " + JSON.stringify(element.name) + ",  " +
+                        "Active: " + JSON.stringify(element.active) + ",  " +
+                        "Open Seats: " + JSON.stringify(element.openSeats) + "/" + JSON.stringify(element.totalSeats) + ",  " +
+                        "Revenue: " + JSON.stringify(element.revenue)))
+
+                        document.getElementById("showReport").appendChild(document.createElement("br"))
+                    })
+                    
+                }
+                else{
+                    document.getElementById("showReport").appendChild(list)
+                }
             }
             displayReport()
         }
@@ -85,6 +101,6 @@
     <input id="showDate" type="datetime-local">
     <input type="button" value="Delete Show" onClick="JavaScript:handleDeleteShow(this)"><br>
     
-    <p id="showReport"></p>
+    <label id="showReport"></label>
     <label id="venueList"></label>
 </html>
