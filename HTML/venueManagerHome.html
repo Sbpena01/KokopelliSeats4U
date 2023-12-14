@@ -269,6 +269,34 @@
                 }
                 displayList()
         }
+
+        function handleSearchVenues(e){
+            let search = document.getElementById("venueSearch").value
+            payload = {
+                "name": search
+            }
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/searchVenue",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload)
+                }).then((response) => response)
+            const searchVenue = async () => {
+                let val = await response
+                let result = await val.json()
+                document.getElementById("venueList").innerHTML = "";
+
+                result.success.forEach(element => {
+                    document.getElementById("venueList").appendChild(document.createTextNode(
+                        JSON.stringify(element.name)
+                    ))
+                    document.getElementById("venueList").appendChild(document.createElement("br"))
+                });
+            }
+            searchVenue()
+        }
         
     </script>
 
@@ -293,6 +321,8 @@
     <input id="venueName" placeholder="Venue Name">
     <input type="button" value="Generate Show Report" onClick="JavaScript:createShowReport(this)"><br>
     <br>
+    <input id="venueSearch" placeholder="Search for Venue">
+    <input type="button" value="Search" onClick="JavaScript:handleSearchVenues(this)"><br>
     <input type="button" value="List Venues" onClick="JavaScript:handleListVenues(this)">
     <input type="button" value="List Shows" onClick="JavaScript:handleListShows(this)"><br>
     <br>

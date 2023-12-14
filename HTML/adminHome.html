@@ -21,24 +21,32 @@
             displayReport()
         }
 
-        function handleListVenues(e){
-            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenues", // Fix URL <----
+        function handleListVenues(e) {
+            const response = fetch("https://nk2xl9d1ok.execute-api.us-east-1.amazonaws.com/dev/listVenuesAdmin",
                 {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                    },
+                    }
                 }).then((response) => response)
             const displayList = async () => {
                 let val = await response
                 let result = await val.json()
-                const venueList = document.getElementById("venueList")
-                let namesHTML = "";
-
-                result.success.forEach(element => {
-                    namesHTML += `<p>${element.name}</p>`;
-                });
-                venueList.innerHTML = namesHTML
+                const list = result.success
+                if(result.success.length == 0){
+                    venueList.innerHTML = "No Venues Found"
+                }
+                else{
+                    document.getElementById("venueList").innerHTML = ""
+                    list.forEach(element => {
+                        document.getElementById("venueList").appendChild(document.createTextNode( 
+                            "Name: " + JSON.stringify(element.name) + ",  " +
+                            "Venue ID: " + JSON.stringify(element.vid)
+                        ))
+                        document.getElementById("venueList").appendChild(document.createElement("br"))
+                    })
+                }
+                
             }
             displayList()
         }
@@ -77,6 +85,6 @@
     <input id="showDate" type="datetime-local">
     <input type="button" value="Delete Show" onClick="JavaScript:handleDeleteShow(this)"><br>
     
-    <p1 id="showReport"></p1>
-    <p1 id="venueList"></p1>
+    <p id="showReport"></p>
+    <label id="venueList"></label>
 </html>
