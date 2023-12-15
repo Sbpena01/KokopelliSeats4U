@@ -22,6 +22,7 @@
                     list.forEach(element => {
                         document.getElementById("showReport").appendChild(document.createTextNode(
                         "Show: " + JSON.stringify(element.name) + ",  " +
+                        "Date: " + JSON.stringify(element.date) + ",  " +
                         "Active: " + JSON.stringify(element.active) + ",  " +
                         "Open Seats: " + JSON.stringify(element.openSeats) + "/" + JSON.stringify(element.totalSeats) + ",  " +
                         "Revenue: " + JSON.stringify(element.revenue)))

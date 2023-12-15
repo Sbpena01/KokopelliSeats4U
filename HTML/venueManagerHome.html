@@ -137,6 +137,12 @@
             const fetchResult = async () => {
                 let val = await response
                 let result = await val.json()
+                if(result.statusCode == 200){
+                    alert("Show has been created")
+                }
+                else{
+                    alert(result.success)
+                }
             }
             fetchResult()
         }
