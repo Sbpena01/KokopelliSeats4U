@@ -32,9 +32,9 @@ You will need to translate, military time to AM and PM when inputting into the f
 When displaying the date of a show or venue, the format is yyyy-mm-dd hh-mm-ss. There are some added characters like Y and Z. We do not know what these mean but the date information is still displayed correctly.
 
 These are the points we missed in previous iterations:
-#1 - Venues don’t have credentials (lost 1 point)
-#1 - Start new browser and try to have Venue manager for Wobegon Public High School try to load up its information (lost 2 points)
-#1 - Admin logs in (lost 5 points)
-#1 - Start new browser and try to have Venue manager for Wobegon Public High School try to load up its information (lost 2 points)
-#2 - In another browser as the VM for Worcester Tech try to load the list of shows (lost 5 points)
-#2 - Venue Manager for Worcester Tech Generate Shows Report for their own venue, which should only contain two shows (it is acceptable to just list the names of the shows in venue) (lost 5 points)
+1. #1 - Venues don’t have credentials (lost 1 point)
+2. #1 - Start new browser and try to have Venue manager for Wobegon Public High School try to load up its information (lost 2 points)
+3. #1 - Admin logs in (lost 5 points)
+4. #1 - Start new browser and try to have Venue manager for Wobegon Public High School try to load up its information (lost 2 points)
+5. #2 - In another browser as the VM for Worcester Tech try to load the list of shows (lost 5 points)
+6. #2 - Venue Manager for Worcester Tech Generate Shows Report for their own venue, which should only contain two shows (it is acceptable to just list the names of the shows in venue) (lost 5 points)
